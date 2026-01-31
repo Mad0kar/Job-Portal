@@ -1,6 +1,5 @@
 # --- Dependencies ---
 node_modules/
-package-lock.json  # Optional: Keep this if you want to version lock dependencies, otherwise ignore.
 
 # --- OS Files (Mac/Windows) ---
 .DS_Store
@@ -10,15 +9,30 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+.env.test
 
 # --- Build Outputs ---
 dist/
 build/
 coverage/
 
-# --- Logs ---
+# --- IDE Settings (VS Code / WebStorm) ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Logs & Pids ---
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 logs/
 *.log
+*.pid
+*.seed
+*.pid.lock
+
+# --- Local Uploads (Future proofing) ---
+
+uploads/
+tmp/
