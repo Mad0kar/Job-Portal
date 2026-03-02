@@ -5,7 +5,7 @@ import { TryCatch } from "../utils/TryCatch.js";
 import { sql } from "../utils/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { forgotPasswordTemplate } from "../templete";
+import { forgotPasswordTemplate } from "../templete.js";
 import { publishToTopic } from "../producer.js";
 import { redisClient } from "../index.js";
 
