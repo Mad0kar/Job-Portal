@@ -1,0 +1,24 @@
+{
+  "name": "job-portal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm --prefix services/auth run dev\" \"npm --prefix services/user run dev\" \"npm --prefix services/job run dev\" \"npm --prefix services/utils run dev\" \"npm --prefix frontend run dev\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mad0kar/Job-Portal.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Mad0kar/Job-Portal/issues"
+  },
+  "homepage": "https://github.com/Mad0kar/Job-Portal#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
