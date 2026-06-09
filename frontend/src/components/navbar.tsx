@@ -1,4 +1,5 @@
 "use client";
+//"use client"; is a strict instruction you put at the very top of a file. It tells Next.js: "Do not build this component on the backend server. Send this code to the user's browser and run it there."
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -15,13 +16,14 @@ const NavBar = () => {
         setIsOpen(!isOpen);
     };
 
-    const isAuth = false;
+    const isAuth = true ;
 
     const logoutHandler = () => {
         
     };
     return (
         <nav className="z-50 sticky top-0 bg-background/80 border-b backdrop-blur-md shadow-sm">
+           
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center">
@@ -37,6 +39,8 @@ const NavBar = () => {
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-1">
+
+                        {/*Making Home tab  */}
                         <Link href={"/"}>
                         <Button
                             variant={"ghost"}
@@ -46,6 +50,7 @@ const NavBar = () => {
                         </Button>
                         </Link>
 
+                        {/*Making Jobs tab  */}
                         <Link href={"/jobs"}>
                             <Button
                                 variant={"ghost"}
@@ -55,6 +60,7 @@ const NavBar = () => {
                             </Button>
                         </Link>
 
+                        {/*Making About tab  */}
                         <Link href={"/about"}>
                             <Button
                                 variant={"ghost"}
@@ -74,7 +80,7 @@ const NavBar = () => {
                                             <Avatar className="h-9 w-9 ring-2 ring-offset-2 ring-offset-background ring-blue-500/20 cursor-pointer hover:ring-blue-500/40 transition-all">
                                                 {/* <AvatarImage src={user?.image || ""} alt={user?.name || ""} /> */}
                                                 <AvatarFallback className="bg-blue-100 dark:bg-blue-900 text-blue-600">
-                                                    M
+                                                    R
                                                 </AvatarFallback>
                                             </Avatar>
                                         </button>
@@ -83,10 +89,10 @@ const NavBar = () => {
                                     <PopoverContent className="w-56 p-2" align="end">
                                         <div className="px-3 py-2 mb-2 border-b">
                                             <p className="text-sm font-semibold">
-                                                Madhukar
+                                                Ritesh
                                             </p>
                                             <p className="text-xs opacity-60 truncate">
-                                                maddymustfocus@gmail.com
+                                                riteshtomar2005@gmail.com
                                             </p>
                                         </div>
 
@@ -120,7 +126,7 @@ const NavBar = () => {
                             <ModeToggle />     
                     </div>
 
-                    {/* Mobile Menu Button */}
+                    {/* Mobile Menu Button only visible below medium screen */}
                     <div className="md:hidden flex items-center gap-3">
                         <ModeToggle />
 
@@ -134,6 +140,7 @@ const NavBar = () => {
                     </div>
                 </div>
             </div>
+
             {/* mobile view */}
             <div
                 className={`md:hidden border-t overflow-hidden transition-all duration-300 ease-in-out ${
@@ -142,15 +149,19 @@ const NavBar = () => {
             >
                 <div className="px-3 py-3 space-y-1 bg-background/95 backdrop-blur-md">
                     {/* isauth or user */}
+
+                    {/*for home tag */}
                     <Link href={"/"} onClick={toggleMenu}>
                         <Button
                             variant={"ghost"}
                             className="w-full justify-start gap-3 h-11"
                         >
+                            
                             <Home size={18} /> Home
                         </Button>
                     </Link>
 
+                    {/*for Jobs tag */}
                     <Link href={"/jobs"} onClick={toggleMenu}>
                         <Button
                             variant={"ghost"}
@@ -160,6 +171,7 @@ const NavBar = () => {
                         </Button>
                     </Link>
 
+                    {/*for About tag */}
                     <Link href={"/about"} onClick={toggleMenu}>
                         <Button
                             variant={"ghost"}
@@ -168,7 +180,7 @@ const NavBar = () => {
                             <Info size={18} /> About
                         </Button>
                     </Link>
-
+{/*If isAuth is true then show my profile and logout button else if it's false then it will show Sign in button   */}
                     {isAuth ? (
                         <>
                             <Link href={"/about"} onClick={toggleMenu}>
@@ -182,6 +194,7 @@ const NavBar = () => {
                             <Button
                                 variant={"destructive"}
                                 className="w-full justify-start gap-3 h-11"
+                               
                                 onClick={() => {
                                     logoutHandler();
                                     toggleMenu();
@@ -203,4 +216,41 @@ const NavBar = () => {
     );
 };
 
+
 export default NavBar
+
+
+/*Navbar Breakdown
+This navbar has two main parts — one for laptop/desktop view and one for mobile view.
+
+Part 1 — Desktop View (hidden md:flex)
+This part is hidden on mobile and only shows on medium screens and above. Inside it we have 3 sections:
+1. Logo
+
+Shows the brand name "HireHeaven" where "Hire" is blue gradient and "Heaven" is red
+Clicking it takes you to the home page
+
+2. Navigation Links (Center)
+
+Three links — Home, Jobs, About — each with an icon
+These are ghost buttons that navigate to their respective pages
+
+3. Right Side Actions
+
+If the user is logged in → shows an Avatar that opens a dropdown with name, email, "My Profile" and "Logout" options
+If the user is not logged in → shows a simple "Sign In" button
+A dark/light mode toggle is always visible here
+
+
+Part 2 — Mobile View (md:hidden)
+This part is hidden on desktop and only appears on small screens. Inside it we have 2 sections:
+1. Top Bar
+
+Shows the mode toggle and a hamburger/close icon button
+Clicking the button toggles isOpen state to show or hide the menu
+
+2. Dropdown Menu
+
+Slides in/out smoothly using a height + opacity transition based on isOpen
+Contains the same Home, Jobs, About links but as full-width buttons
+At the bottom, shows either My Profile + Logout (if logged in) or a Sign In button (if not logged in) */
