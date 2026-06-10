@@ -6,7 +6,7 @@ const About = () => {
  return ( 
  <div className="min-h-screen">
  {/* Mission Section */}
- <section className="container mx-auto px-4 py-12 md:py-16">
+ <section className="container mx-auto px-8 py-12 md:py-16">
  <div className="max-w-4xl mx-auto">
  {/* Image */}
  <div className="flex justify-center mb-8">

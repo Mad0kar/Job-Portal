@@ -8,18 +8,22 @@ import { Briefcase, Home, Info, LogOut, Menu, User, X } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ModeToggle } from "./mode-toggle";
+import { useAppData } from "@/context/AppContext";
 
 const NavBar = () => {
     const [isOpen, setIsOpen] = useState(false);
   
+    const { isAuth, user, setIsAuth, setUser, loading, logoutUser } =
+    useAppData();
+    
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
 
-    const isAuth = true ;
+   
 
     const logoutHandler = () => {
-        
+       logoutUser();
     };
     return (
         <nav className="z-50 sticky top-0 bg-background/80 border-b backdrop-blur-md shadow-sm">
@@ -73,14 +77,16 @@ const NavBar = () => {
 
                     {/* Right side Actions */}
                     <div className="hidden md:flex items-center gap-3">
-                            {isAuth ? (
+                        {
+                            loading ? "": <> {isAuth ? (
                                 <Popover>
                                     <PopoverTrigger asChild>
                                         <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                                             <Avatar className="h-9 w-9 ring-2 ring-offset-2 ring-offset-background ring-blue-500/20 cursor-pointer hover:ring-blue-500/40 transition-all">
-                                                {/* <AvatarImage src={user?.image || ""} alt={user?.name || ""} /> */}
+                                                <AvatarImage src={user ? user.profile_pic as string : ""}
+                                                 alt={user? user.name : ""} /> 
                                                 <AvatarFallback className="bg-blue-100 dark:bg-blue-900 text-blue-600">
-                                                    R
+                                                    {user?.name?.charAt(0).toUpperCase() || "U"}
                                                 </AvatarFallback>
                                             </Avatar>
                                         </button>
@@ -89,10 +95,10 @@ const NavBar = () => {
                                     <PopoverContent className="w-56 p-2" align="end">
                                         <div className="px-3 py-2 mb-2 border-b">
                                             <p className="text-sm font-semibold">
-                                                Ritesh
+                                                {user && user.name}
                                             </p>
                                             <p className="text-xs opacity-60 truncate">
-                                                riteshtomar2005@gmail.com
+                                                {user && user.email}
                                             </p>
                                         </div>
 
@@ -122,7 +128,8 @@ const NavBar = () => {
                                         Sign In
                                     </Button>
                                 </Link>
-                            )}
+                            )}</>
+                        }   
                             <ModeToggle />     
                     </div>
 

@@ -10,6 +10,7 @@ import { ArrowRight, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Loading from "@/components/loading";
 
 
 const LoginPage = () => {
@@ -20,7 +21,7 @@ const LoginPage = () => {
   const { isAuth, setUser, loading, setIsAuth, fetchApplications } =
     useAppData();
 
-  
+  if (loading) return <Loading />;
 
   //This line redirects the user away from the login page if they are already logged in.
   if (isAuth) return redirect("/");
@@ -67,14 +68,13 @@ This keeps the user logged in even after closing the browser*/}
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2">
             Welcome back to HireHeaven
           </h1>
           <p className="text-sm opacity-70">Sign in to continue your journey</p>
         </div>
-
+        
         <div className="border border-gray-400 rounded-2xl p-8 shadow-lg backdrop-blur-sm">
 
           <form onSubmit={submitHandler} className="space-y-5">

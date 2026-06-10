@@ -206,6 +206,7 @@ It is when a bad website tricks your browser into making a request to another we
     }
   }
 
+  {/*useEffect with empty [] runs once when the app first loads. It calls fetchUser() to check if the user is already logged in (by reading the saved token from cookies) and fetchApplications() to load their job applications. Without this, every time the page refreshes the user would get logged out even though their token is still saved in cookies. */}
   useEffect(() => {
     fetchUser();
     fetchApplications();
