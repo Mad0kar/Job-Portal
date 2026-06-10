@@ -127,7 +127,7 @@ export interface Company {
   created_at: string;
   jobs?: Job[];
 }
-export const utils_service ="http://localhost:5002"
+ 
 
 type ApplicationStatus = "Submitted" | "Rejected" | "Hired";
 

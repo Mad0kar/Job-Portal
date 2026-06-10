@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css" ;
 import NavBar from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AppProvider } from "@/context/AppContext";
 
 
 export const metadata: Metadata = {
@@ -17,15 +18,18 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-      <ThemeProvider
+        <AppProvider>
+          <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
-          >
+            >
             <NavBar />
             {children}
-      </ThemeProvider>
+          </ThemeProvider> 
+        </AppProvider>
+      
       </body>
     </html>
   );

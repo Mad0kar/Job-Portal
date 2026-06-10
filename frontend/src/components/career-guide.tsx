@@ -24,8 +24,8 @@ import {
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
-import { utils_service } from "@/type";
-//import toast from "react-hot-toast";
+import { utils_service } from "@/context/AppContext";
+import toast from "react-hot-toast";
 
 const CarrerGuide = () => {
   const [open, setOpen] = useState(false);
@@ -53,8 +53,8 @@ const CarrerGuide = () => {
 
   const getCarrerGuidance = async () => {
     if (skills.length === 0) {
-        alert("Please add at least on skill");
-      //toast.error("Please add at least on skill");
+       
+      toast.error("Please add at least on skill");
       return;
     }
     setLoading(true);
@@ -64,11 +64,11 @@ const CarrerGuide = () => {
       });
 
       setResponse(data);
-      alert("Carrer guidence generated")
-      //toast.success("Carrer guidence generated");
+     
+      toast.success("Carrer guidence generated");
     } catch (error: any) {
-        alert(error.response.data.message);
-      //toast.error(error.response.data.message);
+       
+      toast.error(error.response.data.message);
     } finally {
       setLoading(false);
     }
