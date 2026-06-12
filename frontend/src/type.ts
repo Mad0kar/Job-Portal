@@ -127,7 +127,7 @@ export interface Company {
   created_at: string;
   jobs?: Job[];
 }
- 
+
 
 type ApplicationStatus = "Submitted" | "Rejected" | "Hired";
 

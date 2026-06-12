@@ -24,7 +24,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [btnLoading, setBtnLoading] = useState(false);
+  const [btnLoading, setBtnLoading] = useState(false); 
 
   const token = Cookies.get("token");
 
@@ -115,15 +115,15 @@ It is when a bad website tricks your browser into making a request to another we
     }
   }
 
-  async function logoutUser() {
+  async function logoutUser() { 
     Cookies.set("token", "");
     setUser(null);
     setIsAuth(false);
     toast.success("Logged out successfully");
   }
 
-  async function addSkill(
-    skill: string,
+  async function addSkill( 
+     skill: string,
     setSkill: React.Dispatch<React.SetStateAction<string>>
   ) {
     setBtnLoading(true);
