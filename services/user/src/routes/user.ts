@@ -6,7 +6,7 @@ import uploadFile from "../middlewares/multer.js";
 const router = express.Router();
 
 router.get("/me", isAuth, myProfile);
-router.get("/:userId", isAuth, getUserProfile);
+router.get("/:userId", isAuth, getUserProfile); //to fetch profile of different user
 router.put("/update/profile", isAuth, updateUserProfile);
 router.put("/update/pic", isAuth, uploadFile, updateProfilePic);
 router.put("/update/resume", isAuth, uploadFile, updateResume);
@@ -16,3 +16,4 @@ router.post("/apply/job", isAuth, applyForJob);
 router.get("/application/all", isAuth, getAllaplications);
 
 export default router;
+     

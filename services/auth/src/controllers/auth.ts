@@ -22,7 +22,7 @@ export const registerUser = TryCatch(async (req, res, next) => {
         throw new ErrorHandler(409, "User with this email already exists");
     }
 
-    const hashPassword = await bcrypt.hash(password, 10);
+    const hashPassword = await bcrypt.hash(password as string, 10);
 
     let registeredUser;
 
@@ -88,7 +88,7 @@ export const registerUser = TryCatch(async (req, res, next) => {
   
     const userObject = user[0];
   
-    const matchPassword = await bcrypt.compare(password, userObject.password);
+    const matchPassword = await bcrypt.compare(password as string, userObject.password);
   
     if (!matchPassword) {
       throw new ErrorHandler(400, "Invalid credentials");
@@ -115,6 +115,7 @@ export const registerUser = TryCatch(async (req, res, next) => {
 
   export const forgotPassword = TryCatch(async (req, res, next) => {
     const { email } = req.body;
+
   
     if (!email) {
       throw new ErrorHandler(400, "email is required");
@@ -123,14 +124,15 @@ export const registerUser = TryCatch(async (req, res, next) => {
     const users =
       await sql`SELECT user_id, email FROM users WHERE email = ${email}`;
   
-    if (users.length === 0) {
+    if (users.length === 0) { // this is done to check if there is any element inside users existed because users would be an array 
       return res.json({
         message: "If that email exists, we have sent a reset link",
-      });
+      }); 
     }
+
     const user = users[0];
   
-    const resetToken = jwt.sign(
+    const resetToken = jwt.sign( // creating payload ,signature and expiration
       {
         email: user.email,
         type: "reset",
@@ -138,11 +140,12 @@ export const registerUser = TryCatch(async (req, res, next) => {
       process.env.JWT_SEC as string,
       { expiresIn: "15m" }
     );
+
   
     const resetLink = `${process.env.Frontend_Url}/reset/${resetToken}`;
   
     await redisClient.set(`forgot:${email}`, resetToken, {
-      EX: 900,
+      EX: 900, //900 sec
     });
   
     const message = {
@@ -151,7 +154,8 @@ export const registerUser = TryCatch(async (req, res, next) => {
       html: forgotPasswordTemplate(resetLink),
     };
   
-    publishToTopic("send-mail", message).catch((error) => {
+    //publishToTopic used from produces.ts
+    publishToTopic("send-mail" /*topic*/ , message).catch((error) => {
       console.error("failed to send message", error);
     });
   
@@ -161,13 +165,14 @@ export const registerUser = TryCatch(async (req, res, next) => {
   });
 
   export const resetPassword = TryCatch(async (req, res, next) => {
-    const { token } = req.params;
+    const { token } = req.params; //take token from the requet
     const { password } = req.body;
   
     let decoded: any;
   
     try {
-      decoded = jwt.verify(token, process.env.JWT_SEC as string);
+      //jwt.verify returns the decoded payload as a live JavaScript object. 
+      decoded = jwt.verify(token as string, process.env.JWT_SEC as string);
     } catch (error) {
       throw new ErrorHandler(400, "Expired token");
     }
@@ -176,27 +181,31 @@ export const registerUser = TryCatch(async (req, res, next) => {
       throw new ErrorHandler(400, "Invalid token type");
     }
   
-    const email = decoded.email;
+    const email = decoded.email; //take email out of decoded 
   
-    const stroredToken = await redisClient.get(`forgot:${email}`);
+    const stroredToken = await redisClient.get(`forgot:${email}`); //get saved toke from redis on the basis of email
   
-    if (!stroredToken || stroredToken !== token) {
-      throw new ErrorHandler(400, "token has been expired");
+    if (!stroredToken || stroredToken !== (token as string)) {
+      throw new ErrorHandler(400, "Token has been expired");
     }
   
     const users = await sql`SELECT user_id FROM users WHERE email = ${email}`;
-  
+  // to check if user with this email even exits in db or not
     if (users.length === 0) {
       throw new ErrorHandler(404, "User not found");
     }
   
     const user = users[0];
   
-    const hashPassword = await bcrypt.hash(password, 10);
-  
+    //hashing the password using bcrypt
+    const hashPassword = await bcrypt.hash(password as string, 10);
+
+  // update in users table set password =hasPassword where user id is user .user_id
     await sql`UPDATE users SET password = ${hashPassword} WHERE user_id = ${user.user_id}`;
   
+    //now delete it from redis 
     await redisClient.del(`forgot:${email}`);
   
     res.json({ message: "Password changed successfully" });
-  });
+  }); 
+  

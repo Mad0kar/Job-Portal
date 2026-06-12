@@ -1,13 +1,15 @@
 import express from "express";
 import dotenv from "dotenv";
-import userRoutes from "./routes/user.js";
+import userRoutes from "./routes/user.js"; // do not forget js here 
+import cors from 'cors';
 
 dotenv.config();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
-app.use("/api/user", userRoutes);
+app.use("/api/user", userRoutes); // setting route for user service 
 
 
 
