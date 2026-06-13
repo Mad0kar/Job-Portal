@@ -6,7 +6,7 @@ import Info from "./components/info";
 import Skills from "./components/skills";
 import Company from "./components/company";
 import { useRouter } from "next/navigation";
-import AppliedJobs from "./components/appliedJobs";
+/*import AppliedJobs from "./components/appliedJobs";*/
 
 const AccountPage = () => {
   const { isAuth, user, loading, applications } = useAppData();
@@ -28,9 +28,10 @@ const AccountPage = () => {
           {user.role === "jobseeker" && (
             <Skills user={user} isYourAccount={true} /> //only going to show this skills tab when user is jobseeker
           )}
-          {user.role === "jobseeker" && (
+          {/* {user.role === "jobseeker" && (
             <AppliedJobs applications={applications} />
-          )}
+          )}*/}
+          
           {user.role === "recruiter" && <Company />}
         </div>
       )}

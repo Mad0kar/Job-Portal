@@ -190,7 +190,7 @@ const NavBar = () => {
 {/*If isAuth is true then show my profile and logout button else if it's false then it will show Sign in button   */}
                     {isAuth ? (
                         <>
-                            <Link href={"/about"} onClick={toggleMenu}>
+                            <Link href={"/account"} onClick={toggleMenu}>
                                 <Button
                                     variant={"ghost"}
                                     className="w-full justify-start gap-3 h-11"

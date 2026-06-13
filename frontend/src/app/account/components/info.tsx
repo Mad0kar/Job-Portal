@@ -263,9 +263,12 @@ const Info: React.FC<AccontProps> = ({ user, isYourAccount }) => {
                   </h2>
 
                   <div className="p-6 rounded-lg bg-linear-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 to-purple-950/20 ">
+
+                   {/* this part if code checks user.subscription and shows 3 different UIs based on whether the user has never subscribed, is actively subscribed, or has an expired subscription.*/}
                     {!user.subscription ? (
                       <>
                         <div className="flex items-center justify-between flex-wrap gap-4">
+
                           <div>
                             <p className="font-semibold text-lg mb-1">
                               No Active Subscription
@@ -273,7 +276,8 @@ const Info: React.FC<AccontProps> = ({ user, isYourAccount }) => {
                             <p className="text-sm opacity-70">
                               Subscribe to unlock premium features and benefits
                             </p>
-                          </div>
+                          </div> 
+
                           <Button
                             className="gap-2"
                             onClick={() => router.push("/subscribe")}
@@ -285,7 +289,9 @@ const Info: React.FC<AccontProps> = ({ user, isYourAccount }) => {
                       </>
                     ) : new Date(user.subscription).getTime() > Date.now() ? (
                       <div className="flex items-center justify-between flex-wrap gap-4">
+
                         <div>
+
                           <div className="flex items-center gap-2 mb-2">
                             <CheckCircle2
                               size={20}
@@ -295,7 +301,9 @@ const Info: React.FC<AccontProps> = ({ user, isYourAccount }) => {
                               Active Subscription
                             </p>
                           </div>
+
                           <p className="text-sm opacity-70">
+                            {/*It converts a raw database date like "2026-12-31T00:00:00.000Z" into a readable format like "December 31, 2026".*/}
                             Valid until:{" "}
                             {new Date(user.subscription).toLocaleDateString(
                               "en-US",
@@ -306,11 +314,14 @@ const Info: React.FC<AccontProps> = ({ user, isYourAccount }) => {
                               }
                             )}
                           </p>
+
                         </div>
+
                         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-700 text-white font-medium">
                           <CheckCircle2 size={18} />
                           Subcribed
                         </div>
+
                       </div>
                     ) : (
                       <>
@@ -349,12 +360,15 @@ const Info: React.FC<AccontProps> = ({ user, isYourAccount }) => {
                           </Button>
                         </div>
                       </>
-                    )}
+                    )} 
+
+
                   </div>
                 </div>
               )}
             </>
           )}
+          
         </div>
       </Card>
 
