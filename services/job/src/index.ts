@@ -22,11 +22,14 @@ async function initDB() {
           END IF;
       END$$;
       `;
-  
-      await sql`
+   //create table companies 
+   /*SERIAL is a PostgreSQL data type that creates an 
+    auto-incrementing integer — you don't have to manually provide 
+    a value, the database automatically assigns the next number.*/
+      await sql `
       CREATE TABLE IF NOT EXISTS companies (
-      company_id SERIAL PRIMARY KEY,
-      name VARCHAR(255) NOT NULL UNIQUE,
+      company_id SERIAL PRIMARY KEY,   
+      name VARCHAR(255) NOT NULL UNIQUE, 
       description TEXT NOT NULL,
       website VARCHAR(255) NOT NULL,
       logo VARCHAR(255) NOT NULL,
@@ -35,7 +38,8 @@ async function initDB() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
       `;
-  
+  //VARCHAR is used in SQL/Database, STRING is used in TypeScript/JavaScript — they are the same concept but in different worlds 
+  //creating jobs table 
       await sql`
       CREATE TABLE IF NOT EXISTS jobs(
       job_id SERIAL PRIMARY KEY,
@@ -54,6 +58,7 @@ async function initDB() {
       )
       `;
   
+      //creating applications table 
       await sql`
       CREATE TABLE IF NOT EXISTS applications(
       application_id SERIAL PRIMARY KEY,
@@ -64,9 +69,10 @@ async function initDB() {
       resume VARCHAR(255) NOT NULL,
       applied_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
       subscribed BOOLEAN,
-      UNIQUE (job_id, applicant_id)
+      UNIQUE (job_id, applicant_id) 
       )
       `;
+      //UNIQUE (job_id, applicant_id)  means the combination of both must be unique together — not individually.
   
       console.log(
         "Job service database tables checked and created successfully."
@@ -74,15 +80,17 @@ async function initDB() {
     } catch (error) {
       console.log("Error while creating tables", error);
       process.exit(1);
+      /*process.exit(0)-> App stopped successfully — everything was fine.
+      process.exit(1)-> App stopped due to an ERROR — something went wrong */
     }
   }
   
   initDB().then(() => {
-    app.listen(process.env.PORT, () => {
+    app.listen(process.env.PORT, () =>  {
       console.log(
         `Job service is running on http://localhost:${process.env.PORT}`
       );
     });
   });
   
-  
+   

@@ -10,10 +10,7 @@ export const redisClient = createClient({
   url: process.env.Redis_url,
 });
 
-redisClient
-  .connect()
-  .then(() => console.log("connected to redis"))
-  .catch(console.error);
+redisClient.connect() .then(() => console.log("connected to redis")).catch(console.error);
 
 async function initDb() {
     try {
