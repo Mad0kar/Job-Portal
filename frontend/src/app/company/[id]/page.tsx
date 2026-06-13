@@ -302,8 +302,7 @@ const CompanyPage = () => {
                                     </DialogTrigger>
 
                                     {/*overflow-y-auto is a Tailwind CSS utility class that controls vertical scrolling.*/}
-                                    <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto" onInteractOutside={(e) => e.preventDefault()}
-                                        onPointerDownOutside={(e) => e.preventDefault()}>
+                                    <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
 
                                         <DialogHeader>
                                             <DialogTitle className="text-2xl flex items-center gap-2">
