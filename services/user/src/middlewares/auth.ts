@@ -18,7 +18,7 @@ interface User {
 }
 
 export interface AuthenticatedRequest extends Request {
-  user?: User;
+  user?: User; 
 }
 
 export const isAuth = async (
@@ -36,12 +36,20 @@ export const isAuth = async (
       return;
     }
 
-    const token = authHeader.split(" ")[1];
+    const token = authHeader.split(" ")[1]; //token is like-> bearer ${token}
 
     const decodedPayload = jwt.verify(
       token,
       process.env.JWT_SEC as string
     ) as JwtPayload;
+/*If the signature check is successful, the verify function
+ extracts the readable JSON object hidden inside the token
+  (like the user's ID or email).
+  
+  It tells TypeScript: "The object stored in decodedPayload 
+  will perfectly match the JwtPayload interface.*/
+
+
 
     if (!decodedPayload || !decodedPayload.id) {
       res.status(401).json({

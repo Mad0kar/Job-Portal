@@ -10,13 +10,16 @@ export const connectKafka = async () => {
     const kafka = new Kafka({
       clientId: "auth-service",
       brokers: [process.env.Kafka_Broker || "localhost:9092"],
+      /*brokers → the address of the Kafka server .If no address in environment variables, use localhost:9092 as default */
     });
 
+    /*Admin is like a manager of Kafka .Used to check and create topics (mailboxes).Not for sending messages, just for managing */
     admin = kafka.admin();
     await admin.connect();
 
     const topics = await admin.listTopics();
 
+    //Create the topic if it doesn't exist
     if (!topics.includes("send-mail")) {
       await admin.createTopics({
         topics: [

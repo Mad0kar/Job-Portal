@@ -1,4 +1,4 @@
-import ErrorHandler from "../utils/errorHandler.js";
+ import ErrorHandler from "../utils/errorHandler.js";
 import { TryCatch } from "../utils/TryCatch.js";
 import { AuthenticatedRequest } from "../middlewares/auth.js";
 import getBuffer from "../utils/buffer.js";
@@ -7,7 +7,7 @@ import axios from "axios";
 import { applicationStatusUpdateTemplate } from "../tempelete.js";
 import { publishToTopic } from "../producer.js";
 
-
+//function to  create new company 
 export const createCompany = TryCatch(
     async (req: AuthenticatedRequest, res) => {
       const user = req.user;
@@ -29,6 +29,7 @@ export const createCompany = TryCatch(
       throw new ErrorHandler(400, "All the fields required");
     }
 
+    //checking if compamy already existed
     const existingCompanies =
       await sql`SELECT company_id FROM companies WHERE name = ${name}`;
 
@@ -67,7 +68,8 @@ export const createCompany = TryCatch(
     }
 ); 
 
-export const deleteCompany = TryCatch(
+//function to delete company 
+export const deleteCompany = TryCatch( 
     async (req: AuthenticatedRequest, res) => {
       const user = req.user;
   
@@ -87,10 +89,11 @@ export const deleteCompany = TryCatch(
   
       res.json({
         message: "Company and all associated jobs have been deleted",
-      });
+      }); 
     }
   );
 
+  //function to create a job 
 export const createJob = TryCatch(async (req: AuthenticatedRequest, res) => {
     const user = req.user;
   
@@ -137,6 +140,7 @@ export const createJob = TryCatch(async (req: AuthenticatedRequest, res) => {
     });
 });
   
+//function to update a job 
 export const updateJob = TryCatch(async (req: AuthenticatedRequest, res) => {
 const user = req.user;
   
@@ -193,8 +197,11 @@ res.json({
 });
 });
 
+//function to get all company 
 export const getAllCompany = TryCatch(
     async (req: AuthenticatedRequest, res) => {
+ /*Summary: Use const [item] when your database query is mathematically guaranteed to return exactly one row (like searching by ID).
+Use const items (no brackets) when your query might return a list of multiple rows, so you can preserve the entire array and send it to your frontend. */     
       const companies =
         await sql`SELECT * FROM companies WHERE recruiter_id = ${req.user?.user_id}`;
   
@@ -202,6 +209,7 @@ export const getAllCompany = TryCatch(
     }
 );
   
+//function to get detail of any company
 export const getCompanyDetails = TryCatch(
     async (req: AuthenticatedRequest, res) => {
       const { id } = req.params;
@@ -209,9 +217,15 @@ export const getCompanyDetails = TryCatch(
       if (!id) {
         throw new ErrorHandler(400, "Company id is required");
       }
-  
+ 
+ 
+      //COALESCE is used because if there will  be no company just return an empty array.
+      //json_agg(j.*) → Take all those jobs and pack them into one JSON array
+/*'[]'empty array as plain text::jsonconvert it to proper JSON type
+PostgreSQL needs the types to match, so you cast '[]' into JSON explicitly. */
       const [companyData] = await sql`SELECT c.*, COALESCE (
        (
+      
          SELECT json_agg(j.*) FROM jobs j WHERE j.company_id = c.company_id
         ),
         '[]'::json
@@ -226,6 +240,7 @@ export const getCompanyDetails = TryCatch(
     }
 );
 
+//function to get all active jobs  
 export const getAllActiveJobs = TryCatch(async (req, res) => {
     const { title, location } = req.query as {
       title?: string;
@@ -235,9 +250,10 @@ export const getAllActiveJobs = TryCatch(async (req, res) => {
     let querySting = `SELECT j.job_id, j.title, j.description, j.salary, j.location, j.job_type, j.role, j.work_location, j.created_at, c.name AS company_name, c.logo AS company_logo, c.company_id AS company_id FROM jobs j JOIN companies c ON j.company_id = c.company_id WHERE j.is_active = true`;
   
     const values = [];
-  
     let paramIndex = 1;
-  
+   /*The Concept: In your previous code, you used the sql template literal (with backticks) to automatically separate user data from SQL commands to prevent hacking. Because you are now building a string manually, you have to do that separation yourself.
+      The Setup: You create an empty array called values to securely hold the user's search words. The paramIndex is just a counter keeping track of how many filters we have added. */
+
     if (title) {
       querySting += ` AND j.title ILIKE $${paramIndex}`;
       values.push(`%${title}%`);
@@ -250,13 +266,17 @@ export const getAllActiveJobs = TryCatch(async (req, res) => {
       paramIndex++;
     }
   
+    /*Always show newest jobs first
+      DESC = descending = latest date at top */
     querySting += " ORDER BY j.created_at DESC";
   
     const jobs = (await sql.query(querySting, values)) as any[];
-  
+  //PostgreSQL replaces $1, $2 with actual values from the values array:
+
     res.json(jobs);
 });
-  
+ 
+//function to get single jo using job_id in params   
 export const getSingleJob = TryCatch(async (req, res) => {
     const [job] =
       await sql`SELECT * FROM jobs WHERE job_id = ${req.params.jobId}`;
@@ -264,6 +284,7 @@ export const getSingleJob = TryCatch(async (req, res) => {
     res.json(job);
 });
   
+//function for "A recruiter wants to see all applications for their job posting — but only if it's actually their job"
 export const getAllApplicationForJob = TryCatch(
     async (req: AuthenticatedRequest, res) => {
       const user = req.user;
@@ -290,13 +311,16 @@ export const getAllApplicationForJob = TryCatch(
         throw new ErrorHandler(403, "Forbidden you are not allowed");
       }
   
+      //this part is doing work to show the application of subscribed job seekers first   
       const applications =
         await sql`SELECT * FROM applications WHERE job_id = ${jobId} ORDER BY subscribed DESC, applied_at ASC`;
   
       res.json(applications);
     }
 );
-  
+
+
+//now we want to update the application and send a mail after updation 
 export const updateApplication = TryCatch(
     async (req: AuthenticatedRequest, res) => {
       const user = req.user;

@@ -31,6 +31,7 @@ dotenv.config();
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY_GEMINI });
 
+//function for-> "User sends their skills → AI analyzes them → Returns a complete career path suggestion"
 router.post("/career", async (req, res) => {
   try {
     const { skills } = req.body;
@@ -41,6 +42,15 @@ router.post("/career", async (req, res) => {
       });
     }
 
+
+/*The prompt tells AI to return 4 things:
+Field               What it contains
+Summary             Brief overview of the user's skillset
+JobOptions          List of suitable job roles
+SkillsToLearn       What skills to learn next
+LearningApproach    How to approach learning */    
+
+/*AI sometimes wraps its response in markdown code blocks like: ```json { ... } ``` So we strip those out to get clean JSON:  { ... }*/
     const prompt = ` 
 Based on the following skills: ${skills}. 
  
@@ -96,6 +106,7 @@ Mastery', 'DevOps & Cloud').",
         throw new Error("Ai did not return a valid text response.");
       }
 
+      //After JSON.parse() runs, jsonResponse is 100% a JavaScript object — NOT JSON anymore.
       jsonResponse = JSON.parse(rawText);
     } catch (error) {
       return res.status(500).json({
@@ -104,7 +115,9 @@ Mastery', 'DevOps & Cloud').",
       });
     }
 
+   //res.json() converts the JavaScript object BACK into JSON and sends it to the frontend.
     res.json(jsonResponse);
+
   } catch (error: any) {
     res.status(500).json({
       message: error.message,
@@ -112,6 +125,7 @@ Mastery', 'DevOps & Cloud').",
   }
 });
 
+//function for->"User uploads their resume as a PDF → AI analyzes it → Returns an ATS score with detailed feedback"
 router.post("/resume-analyser", async (req, res) => {
   try {
     const { pdfBase64 } = req.body;
@@ -119,6 +133,20 @@ router.post("/resume-analyser", async (req, res) => {
     if (!pdfBase64) {
       return res.status(400).json({ message: "PDF data is required" });
     }
+
+
+/*Telling AI to:
+Act as an ATS expert
+Analyze the resume
+Return results in a specific JSON format */
+
+/*The AI will check the resume for:
+What it checks          Meaning
+formatting              Is the resume format ATS friendly
+keywords                Does it have the right keywords
+structure               Are sections properly organized
+readability             Can ATS easily read the content
+ */
 
     const prompt = ` 
 You are an expert ATS (Applicant Tracking System) analyzer. Analyze the following resume 
@@ -168,6 +196,9 @@ The JSON object should have the following structure:
 Focus on: - File format and structure compatibility - Proper use of standard section headings - Keyword optimization - Formatting issues (tables, columns, graphics, special characters) - Contact information placement - Date formatting - Use of action verbs and quantifiable achievements - Section organization and flow 
 `;
 
+/* Sending 2 things to AI together:
+1.The prompt (instructions what to do)
+2.The actual PDF (the resume to analyze) */
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: [
@@ -178,8 +209,15 @@ Focus on: - File format and structure compatibility - Proper use of standard sec
               text: prompt,
             },
             {
+       //" inlineData->Sending the actual file directly inside the request instead of a URL"       
               inlineData: {
                 mimeType: "application/pdf",
+//mimeType tells AI what type of file you are sending: application/pdf ->PDF file                
+                
+/* pdfBase64.replace->This strips the prefix from base64 string:
+Before → "data:application/pdf;base64,JVBERi0x..."
+After  → "JVBERi0x..."   ← just the actual base64 data
+Because Gemini only needs the raw base64 data, not the prefix. */                
                 data: pdfBase64.replace(/^data:application\/pdf;base64,/, ""),
               },
             },
@@ -199,8 +237,8 @@ Focus on: - File format and structure compatibility - Proper use of standard sec
       if (!rawText) {
         throw new Error("Ai did not return a valid text response.");
       }
-
-      jsonResponse = JSON.parse(rawText);
+ 
+      jsonResponse = JSON.parse(rawText); //convert to js object
     } catch (error) {
       return res.status(500).json({
         message: "Ai returned response that was not valid JSON",
@@ -208,7 +246,7 @@ Focus on: - File format and structure compatibility - Proper use of standard sec
       });
     }
 
-    res.json(jsonResponse);
+    res.json(jsonResponse); //convert to json
   } catch (error: any) {
     res.status(500).json({
       message: error.message,
