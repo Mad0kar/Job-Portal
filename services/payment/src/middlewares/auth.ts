@@ -29,7 +29,7 @@ export const isAuth = async (
   try {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!authHeader || !authHeader.startsWith("Bearer")) {
       res.status(401).json({
         message: "Authorization header is missing or invalid",
       });

@@ -23,6 +23,11 @@ const SubscriptionPage = () => {
 //handleSubscribe gets the user's token, calls your backend to create a Razorpay order, and extracts the order object from the response which is then used to open the payment popup.
  const handleSubscribe = async () => {
     const token = Cookies.get("token");
+      if (!token) {
+    toast.error("You are not logged in. Please login first.");
+    router.push("/login");
+    return;
+  }
     setLoading(true);
     const {
       data: { order },
@@ -42,7 +47,7 @@ const SubscriptionPage = () => {
      shows an error message and stays on the same page. */}   
     const options = {
       key: "rzp_test_T1C4In1p2Y9pRR", 
-      amount: order.id, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      amount: order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
       currency: "INR",
       name: "Hire Heaven",
       description: "Find job easily",

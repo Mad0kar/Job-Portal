@@ -89,7 +89,7 @@ const CompanyPage = () => {
     const [salary, setsalary] = useState("");
     const [location, setlocation] = useState("");
     const [openings, setopenings] = useState("");
-    const [job_type, setjob_type] = useState<string>("");
+    const [job_type, setjob_type] =useState<string | null>(null);
     const [work_location, setwork_location] = useState<string | null>(null);
     const [is_active, setis_active] = useState(true);
 
@@ -426,48 +426,57 @@ const CompanyPage = () => {
 
                                                 {/*For job type */}
                                                 <div className="space-y-2">
-                                                    <Label
-                                                        htmlFor="job_type"
-                                                        className="text-sm font-medium flex items-center gap-1"
-                                                    >
-                                                        <Clock size={16} /> Job Type
-                                                    </Label>
-                                                    <Select value={job_type} onValueChange={(value) => setjob_type(value ?? "")}>
-                                                        <SelectTrigger className="h-11">
-                                                            <SelectValue placeholder="Select job type" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="Full-time">Full-time</SelectItem>
-                                                            <SelectItem value="Part-time">Part-time</SelectItem>
-                                                            <SelectItem value="Contract">Contract</SelectItem>
-                                                            <SelectItem value="Internship">Internship</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
+                          <Label
+                            htmlFor="job_type"
+                            className="text-sm font-medium flex items-center gap-1"
+                          >
+                            <Clock size={16} /> Job Type
+                          </Label>
+                          <Select value={job_type} 
+                          onValueChange={setjob_type}>
+                            <SelectTrigger className="h-11">
+                              <SelectValue placeholder="Select job type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Full-time">
+                                Full-time
+                              </SelectItem>
+                              <SelectItem value="Part-time">
+                                Part-time
+                              </SelectItem>
+                              <SelectItem value="Contract">Contract</SelectItem>
+                              <SelectItem value="Internship">
+                                Internship
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
 
 
                                                 {/*For  work location */}
                                                 <div className="space-y-2">
-                                                    <Label
-                                                        htmlFor="work_location"
-                                                        className="text-sm font-medium flex items-center gap-1"
-                                                    >
-                                                        <Laptop size={16} /> Work Location
-                                                    </Label>
-                                                    <Select
-                                                        value={work_location}
-                                                        onValueChange={(value: string | null) => setwork_location(value)}
-                                                    >
-                                                        <SelectTrigger className="h-11">
-                                                            <SelectValue placeholder="Select Work Location" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="On-site">On-site</SelectItem>
-                                                            <SelectItem value="Remote">Remote</SelectItem>
-                                                            <SelectItem value="Hybrid">Hybrid</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
+                          <Label
+                            htmlFor="work_location"
+                            className="text-sm font-medium flex items-center gap-1"
+                          >
+                            <Laptop size={16} /> Work Location
+                          </Label>
+                          <Select
+                            value={work_location}
+                            onValueChange={(value) => {
+                                setwork_location(value);
+                                }}
+                          >
+                            <SelectTrigger className="h-11">
+                              <SelectValue placeholder="Select Work Location" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="On-site">On-site</SelectItem>
+                              <SelectItem value="Remote">Remote</SelectItem>
+                              <SelectItem value="Hybrid">Hybrid</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
 
                                             </div>
 
